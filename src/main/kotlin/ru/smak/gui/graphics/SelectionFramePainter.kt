@@ -8,8 +8,11 @@ import java.awt.Rectangle
 class SelectionFramePainter(var g: Graphics?){
 
     init{
+        //тело первичного конструктора
+
         g?.apply{
             setXORMode(Color.WHITE)
+            //рисование прямоугольника в невидимой области панели для устранения бага при первом запуске программы
             drawRect(-2, -2, 1, 1)
             setPaintMode()
         }
@@ -37,7 +40,7 @@ class SelectionFramePainter(var g: Graphics?){
             }
             field = value
         }
-
+//выделяемая рамка
     val selectionRect: Rectangle?
         get() {
             startPoint?.let {sp->
@@ -49,7 +52,9 @@ class SelectionFramePainter(var g: Graphics?){
             }
             return null
         }
-
+    /**
+     * Метод отрисовки прямоугольной рамки
+     */
     private fun paint(){
         if (isVisible){
             selectionRect?.let { r ->

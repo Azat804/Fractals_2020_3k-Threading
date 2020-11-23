@@ -27,7 +27,9 @@ class FractalPainter(
     override fun paint(g: Graphics?) {
         val ms1 = System.currentTimeMillis()
         if (fractalTest==null || g==null) return
+        //кол-во потоков
         val threadCount = Runtime.getRuntime().availableProcessors()
+        //ширина полосы для каждого потока
         val stripWidth = plane.width / threadCount
         var stop = true
         println("Want to stop")
@@ -38,9 +40,12 @@ class FractalPainter(
         stop = false
         println("Stopped and starting new...")
         threadList = List<Pair<Thread, BufferedImage>>(threadCount) {
+            //начальная координата x для полосы соответствующего потока
             val b = it * stripWidth
+            //конечная координата x для полосы соответствующего потока
             val e = (it + 1) * stripWidth +
                     if (it == threadCount-1) plane.width % threadCount else 0
+            //изображение полосы соответствующего потока
             val bi = BufferedImage(e - b + 1, plane.height, BufferedImage.TYPE_INT_RGB)
             val bg = bi.graphics
             Pair(thread {
@@ -70,7 +75,14 @@ class FractalPainter(
         val ms2 = System.currentTimeMillis()
         println((ms2 - ms1)/1000.0)
     }
-
+    /**
+     * Рисование пикселя
+     * @param g графический контекст для рисования
+     * @param i координата x пикселя
+     * @param y координата y пикселя
+     * @param xPos координата x пикселя
+     * @param yPos координата y пикселя
+     */
     private fun fillPixel(g: Graphics, i: Int, j: Int, xPos: Int, yPos: Int) {
         val r = fractalTest?.invoke(
                 Complex(
